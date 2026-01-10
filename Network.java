@@ -70,7 +70,7 @@ public class Network {
             return false;
         }
         else{
-            return(u1.addFollowee(name2) && u2.addFollowee(name1));
+            return(u1.addFollowee(name2));
         }
         //// Replace the following statement with your code
     }
@@ -79,10 +79,16 @@ public class Network {
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
         User u = getUser(name);
+        if (u == null) {
+        return null;
+        }
         User maxMutual = null;
-        int countMax = 0;
+        int countMax = -1;
         for (User u1 : this.users){
             if (u1.getName().equals(name)){
+                continue;
+            }
+            if (u.follows(u1.getName())) {
                 continue;
             }
             else{
@@ -93,32 +99,33 @@ public class Network {
                 }
             }
         }
-
+        if (maxMutual == null) {
+            return null;
+        }
         return maxMutual.getName();
     }
 
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
-        Map<String, Integer> dict = new HashMap<>();
-        for (User u : this.users){
-            dict.put(u.getName(),0);
+        if (this.userCount == 0) {
+            return null;
         }
-        for (User u : this.users){
-            for (String s : u.getfFollows()){
-                dict.put(s, dict.get(s) + 1);
+
+        String mostPopular = this.users[0].getName();
+        int max = followeeCount(mostPopular);
+
+        for (int i = 1; i < this.userCount; i++) {
+            String candidate = this.users[i].getName();
+            int count = followeeCount(candidate);
+
+            if (count > max) {
+                max = count;
+                mostPopular = candidate;
             }
         }
-        
-        String most = null;
-        int max = 0;
-        for (Map.Entry<String, Integer> key : dict.entrySet()) {
-            if (key.getValue() > max) {
-                max = key.getValue();
-                most = key.getKey();
-            }
-        }
-        return most;
+
+        return mostPopular;
     }
 
     /** Returns the number of times that the given name appears in the follows lists of all
@@ -135,11 +142,10 @@ public class Network {
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
-        String ans = "";
-        for (User u : this.users){
-            ans += u.toString();
-        }
-
+        String ans = "Network:\n";
+        for (int i = 0; i < this.userCount; i++) {
+            ans += this.users[i].toString() + "\n";
+    }
        //// Replace the following statement with your code
        return null;
     }
