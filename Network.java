@@ -67,7 +67,7 @@ public class Network {
         if (name1 == null || name2 == null) {
             return false;
         }
-        if (name1.equals(name2)) {
+        if (name1 == name2 || name1.equals(name2)) {
             return false;
         }
         User u1 = getUser(name1);
