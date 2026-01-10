@@ -44,7 +44,7 @@
     /** If this user follows the given name, returns true; otherwise returns false. */
     public boolean follows(String name) {
         for (int i = 0; i < this.fCount; i++){
-            if (this.follows[i] == name){
+            if (this.follows[i].equals(name)){
                 return true;
             }
         }
@@ -94,20 +94,20 @@
     /*  Notice: This is the size of the intersection of the two follows lists. */
     public int countMutual(User other) {
         int count = 0;
-        if (other.getfCount() >= this.fCount){
-            for (int i = 0; i <= other.getfCount(); i++){
+        //if (other.getfCount() >= this.fCount){
+            for (int i = 0; i < other.getfCount(); i++){
                 if (follows(other.getfFollows()[i])){
                     count++;
                 }
             }
-        }
-        else{
-            for (int j = 0; j <= this.fCount; j++){
-                if (other.follows(this.follows[j])){
-                    count++;             
-                }
-            }
-        }
+        //}
+        // // else{
+        //     for (int j = 0; j <= this.fCount; j++){
+        //         if (other.follows(this.follows[j])){
+        //             count++;             
+        //         }
+        //     }
+        // }
         return count;
     }
 
