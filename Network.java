@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /** Represents a social network. The network has users, who follow other uesrs.
  *  Each user is an instance of the User class. */
 public class Network {
@@ -30,7 +33,11 @@ public class Network {
      *  If there is no such user, returns null.
      *  Notice that the method receives a String, and returns a User object. */
     public User getUser(String name) {
-        //// Replace the following statement with your code
+        for (int i = 0; i <= this.userCount; i++){
+            if (this.users[i].getName().equals(name)){
+                return this.users[i];
+            }
+        }
         return null;
     }
 
@@ -39,41 +46,99 @@ public class Network {
     *  If the given name is already a user in this network, does nothing and returns false;
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
+        if (this.users.length == this.userCount){
+            return false;
+        }
+        if (getUser(name) == null){
+            this.users[userCount] = new User (name);
+            return true;
+        }
+        else{
+            return false;
+        }
         //// Replace the following statement with your code
-        return false;
     }
 
     /** Makes the user with name1 follow the user with name2. If successful, returns true.
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
+        User u1 = getUser(name1);
+        User u2 = getUser(name2);
+        if (u1 == null || u2 == null){
+            return false;
+        }
+        else{
+            return(u1.addFollowee(name2) && u2.addFollowee(name1));
+        }
         //// Replace the following statement with your code
-        return false;
     }
     
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        //// Replace the following statement with your code
-        return null;
+        User u = getUser(name);
+        User maxMutual = null;
+        int countMax = 0;
+        for (User u1 : this.users){
+            if (u1.getName().equals(name)){
+                continue;
+            }
+            else{
+                int count = u.countMutual(u1);
+                if(count > countMax){
+                    countMax = count;
+                    maxMutual = u1;
+                }
+            }
+        }
+
+        return maxMutual.getName();
     }
 
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
-        //// Replace the following statement with your code
-        return null;
+        Map<String, Integer> dict = new HashMap<>();
+        for (User u : this.users){
+            dict.put(u.getName(),0);
+        }
+        for (User u : this.users){
+            for (String s : u.getfFollows()){
+                dict.put(s, dict.get(s) + 1);
+            }
+        }
+        
+        String most = null;
+        int max = 0;
+        for (Map.Entry<String, Integer> key : dict.entrySet()) {
+            if (key.getValue() > max) {
+                max = key.getValue();
+                most = key.getKey();
+            }
+        }
+        return most;
     }
 
     /** Returns the number of times that the given name appears in the follows lists of all
      *  the users in this network. Note: A name can appear 0 or 1 times in each list. */
     private int followeeCount(String name) {
-        //// Replace the following statement with your code
-        return 0;
+        int count = 0;
+        for (User u : this.users){
+            if (u.follows(name)){
+                count ++;
+            }
+        }
+        return count;
     }
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
+        String ans = "";
+        for (User u : this.users){
+            ans += u.toString();
+        }
+
        //// Replace the following statement with your code
        return null;
     }
